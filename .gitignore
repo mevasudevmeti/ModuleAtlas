@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+
+# Environment/secrets
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Testing/cache
+.pytest_cache/
+.coverage
+
+# Local data
+data/
