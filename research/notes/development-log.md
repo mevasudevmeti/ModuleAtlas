@@ -36,3 +36,19 @@ This establishes a baseline API workflow that can be tested independently before
 Current request flow:
 
 Client → FastAPI → Pydantic Validation → Chat Service → Typed Response
+
+### LLM Provider Abstraction
+
+Introduced an abstract LLM service interface so that ModuleAtlas is not coupled to a specific foundation model provider.
+
+A deterministic mock implementation is currently used while AWS Bedrock account verification is pending.
+
+The abstraction standardises generation output using:
+
+- generated text
+- model identifier
+- input token count
+- output token count
+- inference latency
+
+This design will allow different foundation models and configurations to be evaluated without changing the surrounding application architecture.
