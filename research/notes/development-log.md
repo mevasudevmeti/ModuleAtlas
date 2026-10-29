@@ -24,3 +24,15 @@ Client → FastAPI → API Route → JSON Response
 No retrieval or generative AI functionality has been introduced yet.
 
 This initial version provides the software foundation on which later baseline and experimental retrieval approaches will be implemented and evaluated.
+
+### Chat API Baseline
+
+Implemented the initial `/api/v1/chat` endpoint using typed Pydantic request and response models.
+
+The current chat service uses a deterministic placeholder response and contains no LLM or retrieval functionality.
+
+This establishes a baseline API workflow that can be tested independently before introducing generative or retrieval-based components.
+
+Current request flow:
+
+Client → FastAPI → Pydantic Validation → Chat Service → Typed Response
