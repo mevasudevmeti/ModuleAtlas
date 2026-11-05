@@ -52,3 +52,18 @@ The abstraction standardises generation output using:
 - inference latency
 
 This design will allow different foundation models and configurations to be evaluated without changing the surrounding application architecture.
+
+### Configuration and Provider Selection
+
+Moved runtime configuration outside application code using typed
+Pydantic settings.
+
+The LLM provider, AWS region, AWS profile, and Bedrock model identifier
+are now externally configurable.
+
+Introduced an LLM factory that selects the provider implementation from
+runtime configuration.
+
+This allows model/provider configurations to be changed without modifying
+the surrounding application logic, supporting repeatable comparative
+experiments.
