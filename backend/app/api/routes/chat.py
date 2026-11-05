@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from app.schemas.chat import ChatRequest, ChatResponse
 from app.services.chat_service import ChatService
-from app.services.llm.mock import MockLLMService
+from app.services.llm.factory import create_llm_service
 
 
 router = APIRouter(
@@ -10,7 +10,7 @@ router = APIRouter(
     tags=["chat"],
 )
 
-llm_service = MockLLMService()
+llm_service = create_llm_service()
 chat_service = ChatService(llm_service=llm_service)
 
 
