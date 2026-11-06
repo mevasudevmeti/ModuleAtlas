@@ -88,3 +88,44 @@ coordinate-based sorting enabled.
 
 This establishes a provenance-preserving document representation for
 later retrieval and citation experiments.
+
+### Initial Extraction Quality Observation
+
+Testing against `L4_W5_Connectivity.pdf` demonstrated that the
+presence of extracted text is not sufficient to determine successful
+page extraction.
+
+All 18 pages contained some native text, producing a nominal extraction
+rate of 100%. However, several visually rich slides contain diagrams,
+tables, or graphical information for which only the page heading or a
+small amount of text is available through native PDF text extraction.
+
+Therefore, subsequent ingestion evaluation will distinguish between
+empty pages, sparse pages, and text-rich pages rather than relying only
+on the presence or absence of extracted text.
+
+This motivates investigation of enhanced extraction approaches for
+visual or structurally complex academic material.
+
+### Sparse Page Detection
+
+A simple page-level extraction heuristic was introduced using extracted
+character count.
+
+Pages containing no extracted characters are classified as `empty`.
+
+Pages containing between 1 and 49 characters are classified as `sparse`.
+
+Pages containing 50 or more characters are currently classified as
+`text-rich`.
+
+On the initial Smart Systems lecture document, 7 of 18 pages were
+classified as sparse.
+
+Manual inspection indicates that several sparse pages contain substantial
+visual information such as diagrams and tables despite containing little
+extractable native text.
+
+The sparse threshold is therefore treated as a triage heuristic rather
+than a measure of extraction correctness. Its effectiveness will need to
+be evaluated against manually reviewed pages.
