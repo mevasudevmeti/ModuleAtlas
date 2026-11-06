@@ -67,3 +67,24 @@ runtime configuration.
 This allows model/provider configurations to be changed without modifying
 the surrounding application logic, supporting repeatable comparative
 experiments.
+
+### PDF Ingestion Baseline
+
+Implemented native PDF text extraction using PyMuPDF.
+
+Documents are processed page-by-page while preserving:
+
+- document filename
+- SHA-256 document fingerprint
+- one-based page number
+- extracted page text
+- page count
+
+No OCR, chunking, embeddings, retrieval, or generative AI are
+included in the current ingestion baseline.
+
+Text extraction currently uses PyMuPDF native text extraction with
+coordinate-based sorting enabled.
+
+This establishes a provenance-preserving document representation for
+later retrieval and citation experiments.
