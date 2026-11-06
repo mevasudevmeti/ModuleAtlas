@@ -129,3 +129,23 @@ extractable native text.
 The sparse threshold is therefore treated as a triage heuristic rather
 than a measure of extraction correctness. Its effectiveness will need to
 be evaluated against manually reviewed pages.
+
+### Extraction Quality Ground Truth
+
+Created the first manually labelled extraction-quality dataset using
+the Smart Systems Wireless Connectivity lecture.
+
+Each page was reviewed to determine whether native text extraction
+adequately preserved the meaningful teaching content.
+
+Pages requiring additional processing were labelled according to
+the dominant missing information type, including diagrams, tables,
+and other visual content.
+
+The initial character-count-based sparse-page heuristic will be
+evaluated against this ground truth using precision, recall, and
+accuracy.
+
+Recall is considered particularly important because a false negative
+allows incomplete source content to enter the downstream retrieval
+pipeline.
