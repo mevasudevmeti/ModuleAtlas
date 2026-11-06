@@ -9,7 +9,7 @@ class Settings(BaseSettings):
 
     llm_provider: str = "mock"
 
-    aws_region: str = "eu-west-2"
+    aws_region: str = "eu-north-1"
     aws_profile: str = "moduleatlas"
 
     bedrock_model_id: str = "amazon.nova-lite-v1:0"
