@@ -2,13 +2,21 @@ import hashlib
 from pathlib import Path
 
 import pymupdf
-
+from app.models.document import (
+    DocumentMetadata,
+    DocumentPage,
+    IngestedDocument,
+)
 from app.models.document import DocumentPage, IngestedDocument
 
 
 class DocumentIngestionService:
 
-    def ingest_pdf(self, file_path: Path) -> IngestedDocument:
+    def ingest_pdf(
+    self,
+    file_path: Path,
+    metadata: DocumentMetadata | None = None,
+) -> IngestedDocument:
         if not file_path.exists():
             raise FileNotFoundError(
                 f"PDF not found: {file_path}"
@@ -36,12 +44,15 @@ class DocumentIngestionService:
                         text=text,
                     )
                 )
-
+        if metadata is None:
+            metadata = DocumentMetadata()
+            
         return IngestedDocument(
             document_id=file_hash,
             filename=file_path.name,
             sha256=file_hash,
             page_count=len(pages),
+            metadata=metadata,
             pages=pages,
         )
 
