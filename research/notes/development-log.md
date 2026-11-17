@@ -225,3 +225,33 @@ document, although four false positives reduced precision.
 This suggests that visual-structure features improve detection of pages
 requiring enhanced extraction, but raw image and drawing counts are not
 sufficient to determine whether visual content is semantically important.
+
+### Multi-Signal Extraction Heuristic v2
+
+A second multi-signal heuristic was evaluated after introducing
+template-filtered image metrics and vector-layout features.
+
+Development PDF 1:
+- Precision: 0.846
+- Recall: 1.000
+- F1: 0.917
+- Accuracy: 0.889
+
+Development PDF 2:
+- Precision: 0.846
+- Recall: 1.000
+- F1: 0.917
+- Accuracy: 0.923
+
+Compared with multi-signal v1 on PDF 2, v2 reduced false positives
+from 5 to 2 while preserving zero false negatives.
+
+Character-count-only approaches generalised poorly, particularly on
+the second document where visually significant pages frequently
+contained substantial native text.
+
+Because v2 was designed after inspecting both documents, these results
+are treated as development results rather than independent validation.
+
+A third document with a different visual/template style will be used
+for validation without modifying the heuristic.

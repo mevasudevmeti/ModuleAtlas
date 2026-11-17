@@ -60,24 +60,17 @@ def main() -> None:
             f"Page {page.page_number}: "
             f"chars={page.character_count}, "
             f"images={page.image_count}, "
+            f"template_images="
+            f"{page.template_image_count}, "
+            f"meaningful_images="
+            f"{page.meaningful_image_count}, "
+            f"meaningful_image_cov="
+            f"{page.largest_meaningful_image_coverage:.3f}, "
             f"drawings={page.drawing_count}, "
             f"clusters={page.drawing_cluster_count}, "
-            f"image_cov={page.largest_image_coverage:.3f}, "
             f"drawing_cov="
-            f"{page.largest_drawing_cluster_coverage:.3f}, "
-            f"class={page.classification}"
+            f"{page.largest_drawing_cluster_coverage:.3f}"
         )
-
-    print("\n--- Image Details ---\n")
-
-    for page in document.pages:
-        print(f"\nPage {page.page_number}")
-
-        for index, image in enumerate(page.image_info, start=1):
-            print(
-                f"  Image {index}: "
-                f"coverage={image.coverage:.3f}"
-            )
             
 if __name__ == "__main__":
     main()

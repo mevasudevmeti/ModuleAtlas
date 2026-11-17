@@ -14,15 +14,23 @@ class ExtractionAnalysisService:
         document: IngestedDocument,
     ) -> ExtractionStats:
 
-        page_assessments: list[PageExtractionAssessment] = []
+        page_assessments: list[
+            PageExtractionAssessment
+        ] = []
 
         for page in document.pages:
-            character_count = len(page.text.strip())
+
+            character_count = len(
+                page.text.strip()
+            )
 
             if character_count == 0:
                 classification = "empty"
 
-            elif character_count < self.SPARSE_PAGE_THRESHOLD:
+            elif (
+                character_count
+                < self.SPARSE_PAGE_THRESHOLD
+            ):
                 classification = "sparse"
 
             else:
@@ -32,13 +40,32 @@ class ExtractionAnalysisService:
                 PageExtractionAssessment(
                     page_number=page.page_number,
                     character_count=character_count,
+
                     image_count=page.image_count,
+                    template_image_count=(
+                        page.template_image_count
+                    ),
+                    meaningful_image_count=(
+                        page.meaningful_image_count
+                    ),
+
                     drawing_count=page.drawing_count,
-                    drawing_cluster_count=page.drawing_cluster_count,
-                    largest_image_coverage=page.largest_image_coverage,
+                    drawing_cluster_count=(
+                        page.drawing_cluster_count
+                    ),
+
+                    largest_image_coverage=(
+                        page.largest_image_coverage
+                    ),
+
+                    largest_meaningful_image_coverage=(
+                        page.largest_meaningful_image_coverage
+                    ),
+
                     largest_drawing_cluster_coverage=(
                         page.largest_drawing_cluster_coverage
                     ),
+
                     classification=classification,
                 )
             )

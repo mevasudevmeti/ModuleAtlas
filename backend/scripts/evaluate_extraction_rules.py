@@ -151,6 +151,7 @@ def main() -> None:
     baseline_50: dict[int, bool] = {}
     baseline_125: dict[int, bool] = {}
     multi_signal_v1: dict[int, bool] = {}
+    multi_signal_v2: dict[int, bool] = {}
 
     for page in document.pages:
 
@@ -170,6 +171,14 @@ def main() -> None:
             characters < 50
             or page.image_count >= 3
             or page.drawing_count >= 20
+        )
+
+        multi_signal_v2[page.page_number] = (
+            len(page.text.strip()) < 100
+            or page.largest_meaningful_image_coverage >= 0.20
+            or page.meaningful_image_count >= 2
+            or page.drawing_count >= 30
+            or page.largest_drawing_cluster_coverage >= 0.35
         )
 
     print_result(
@@ -192,6 +201,14 @@ def main() -> None:
         "Multi-signal heuristic v1",
         calculate_metrics(
             multi_signal_v1,
+            ground_truth,
+        ),
+    )
+
+    print_result(
+        "Multi-signal heuristic v2",
+        calculate_metrics(
+            multi_signal_v2,
             ground_truth,
         ),
     )
