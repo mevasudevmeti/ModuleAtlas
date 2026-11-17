@@ -143,6 +143,5 @@ def main() -> None:
     print(f"Recall: {recall:.3f}")
     print(f"Accuracy: {accuracy:.3f}")
 
-
 if __name__ == "__main__":
     main()

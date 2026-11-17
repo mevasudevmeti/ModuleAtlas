@@ -4,6 +4,11 @@ from pydantic import BaseModel
 class PageExtractionAssessment(BaseModel):
     page_number: int
     character_count: int
+    image_count: int
+    drawing_count: int
+    drawing_cluster_count: int
+    largest_image_coverage: float
+    largest_drawing_cluster_coverage: float
     classification: str
 
 

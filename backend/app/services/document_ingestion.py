@@ -38,10 +38,59 @@ class DocumentIngestionService:
                     sort=True,
                 ).strip()
 
+                image_info = page.get_image_info()
+                drawings = page.get_drawings()
+                drawing_clusters = page.cluster_drawings(
+                    drawings=drawings
+                )
+
+                page_area = page.rect.get_area()
+
+                largest_image_area = max(
+                    (
+                        pymupdf.Rect(image["bbox"]).get_area()
+                        for image in image_info
+                    ),
+                    default=0,
+                )
+
+                largest_drawing_cluster_area = max(
+                    (
+                        cluster.get_area()
+                        for cluster in drawing_clusters
+                    ),
+                    default=0,
+                )
+
+                largest_image_coverage = (
+                    largest_image_area / page_area
+                    if page_area > 0
+                    else 0
+                )
+
+                largest_drawing_cluster_coverage = (
+                    largest_drawing_cluster_area / page_area
+                    if page_area > 0
+                    else 0
+                )
+
                 pages.append(
                     DocumentPage(
                         page_number=page_index + 1,
                         text=text,
+                        image_count=len(image_info),
+                        drawing_count=len(drawings),
+                        drawing_cluster_count=len(
+                            drawing_clusters
+                        ),
+                        largest_image_coverage=round(
+                            largest_image_coverage,
+                            4,
+                        ),
+                        largest_drawing_cluster_coverage=round(
+                            largest_drawing_cluster_coverage,
+                            4,
+                        ),
                     )
                 )
         if metadata is None:

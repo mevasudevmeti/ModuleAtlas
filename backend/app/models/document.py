@@ -11,6 +11,11 @@ class DocumentMetadata(BaseModel):
 class DocumentPage(BaseModel):
     page_number: int
     text: str
+    image_count: int
+    drawing_count: int
+    drawing_cluster_count: int
+    largest_image_coverage: float
+    largest_drawing_cluster_coverage: float
 
 
 class IngestedDocument(BaseModel):

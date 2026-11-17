@@ -32,6 +32,13 @@ class ExtractionAnalysisService:
                 PageExtractionAssessment(
                     page_number=page.page_number,
                     character_count=character_count,
+                    image_count=page.image_count,
+                    drawing_count=page.drawing_count,
+                    drawing_cluster_count=page.drawing_cluster_count,
+                    largest_image_coverage=page.largest_image_coverage,
+                    largest_drawing_cluster_coverage=(
+                        page.largest_drawing_cluster_coverage
+                    ),
                     classification=classification,
                 )
             )

@@ -53,5 +53,31 @@ def main() -> None:
                 f"{page.character_count} characters"
             )
 
+    print("\n--- Page Extraction Features ---\n")
+
+    for page in stats.pages:
+        print(
+            f"Page {page.page_number}: "
+            f"chars={page.character_count}, "
+            f"images={page.image_count}, "
+            f"drawings={page.drawing_count}, "
+            f"clusters={page.drawing_cluster_count}, "
+            f"image_cov={page.largest_image_coverage:.3f}, "
+            f"drawing_cov="
+            f"{page.largest_drawing_cluster_coverage:.3f}, "
+            f"class={page.classification}"
+        )
+
+    print("\n--- Image Details ---\n")
+
+    for page in document.pages:
+        print(f"\nPage {page.page_number}")
+
+        for index, image in enumerate(page.image_info, start=1):
+            print(
+                f"  Image {index}: "
+                f"coverage={image.coverage:.3f}"
+            )
+            
 if __name__ == "__main__":
     main()
