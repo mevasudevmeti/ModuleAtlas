@@ -149,3 +149,79 @@ accuracy.
 Recall is considered particularly important because a false negative
 allows incomplete source content to enter the downstream retrieval
 pipeline.
+
+Baseline H1 — Character-count heuristic
+
+Threshold: < 50 characters
+
+Precision: 1.000
+Recall:    0.636
+Accuracy:  0.778
+
+F1 score:  ≈ 0.778
+
+Specificity = TN / (TN + FP)
+            = 7 / 7
+            = 1.000
+
+Meaning we correctly left all genuinely adequate pages alone.
+So the heuristic is: Very conservative: when it flags something, it's right—but it misses too many visually problematic pages.
+
+### Character Threshold Experiment
+
+Character-count thresholds from 25 to 250 were evaluated against the
+manually labelled extraction-quality dataset.
+
+The 125-character threshold produced the strongest balanced result:
+
+- Precision: 0.818
+- Recall: 0.818
+- F1: 0.818
+- Accuracy: 0.778
+
+Increasing the threshold to 200 improved recall to 0.909 but reduced
+precision to 0.714.
+
+These results indicate that character count alone presents a
+precision-recall trade-off and may not reliably identify pages containing
+meaningful visual information.
+
+The 125-character threshold is retained as a development baseline rather
+than a final threshold because the current evaluation contains only one
+18-page document.
+
+The next experiment introduces visual-layout signals such as embedded
+image count and vector drawing count.
+
+### Extraction Heuristic Validation
+
+The extraction heuristics were evaluated unchanged on a second
+26-page Smart Systems lecture document.
+
+Character threshold < 50:
+- Precision: 0.000
+- Recall: 0.000
+- F1: 0.000
+- Accuracy: 0.577
+
+Character threshold < 125:
+- Precision: 0.750
+- Recall: 0.273
+- F1: 0.400
+- Accuracy: 0.654
+
+Multi-signal heuristic v1:
+- Precision: 0.733
+- Recall: 1.000
+- F1: 0.846
+- Accuracy: 0.846
+
+The character-only heuristics generalised poorly because visually
+significant pages could still contain substantial extracted text.
+
+The multi-signal heuristic maintained perfect recall on the validation
+document, although four false positives reduced precision.
+
+This suggests that visual-structure features improve detection of pages
+requiring enhanced extraction, but raw image and drawing counts are not
+sufficient to determine whether visual content is semantically important.
