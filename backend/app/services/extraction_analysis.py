@@ -42,28 +42,28 @@ class ExtractionAnalysisService:
                     character_count=character_count,
 
                     image_count=page.image_count,
-                    template_image_count=(
-                        page.template_image_count
-                    ),
-                    meaningful_image_count=(
-                        page.meaningful_image_count
-                    ),
+                    template_image_count=page.template_image_count,
+                    meaningful_image_count=page.meaningful_image_count,
 
                     drawing_count=page.drawing_count,
-                    drawing_cluster_count=(
-                        page.drawing_cluster_count
+                    template_drawing_count=page.template_drawing_count,
+                    meaningful_drawing_count=page.meaningful_drawing_count,
+
+                    drawing_cluster_count=page.drawing_cluster_count,
+                    meaningful_drawing_cluster_count=(
+                        page.meaningful_drawing_cluster_count
                     ),
 
-                    largest_image_coverage=(
-                        page.largest_image_coverage
-                    ),
-
+                    largest_image_coverage=page.largest_image_coverage,
                     largest_meaningful_image_coverage=(
                         page.largest_meaningful_image_coverage
                     ),
 
                     largest_drawing_cluster_coverage=(
                         page.largest_drawing_cluster_coverage
+                    ),
+                    largest_meaningful_drawing_cluster_coverage=(
+                        page.largest_meaningful_drawing_cluster_coverage
                     ),
 
                     classification=classification,

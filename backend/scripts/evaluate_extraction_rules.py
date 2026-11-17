@@ -176,9 +176,12 @@ def main() -> None:
         multi_signal_v2[page.page_number] = (
             len(page.text.strip()) < 100
             or page.largest_meaningful_image_coverage >= 0.20
-            or page.meaningful_image_count >= 2
-            or page.drawing_count >= 30
-            or page.largest_drawing_cluster_coverage >= 0.35
+            or (
+                    page.meaningful_image_count >= 2
+                    and page.largest_meaningful_image_coverage >= 0.02
+                )
+            or page.meaningful_drawing_count >= 30
+            or page.largest_meaningful_drawing_cluster_coverage >= 0.35
         )
 
     print_result(

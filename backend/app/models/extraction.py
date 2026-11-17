@@ -8,10 +8,14 @@ class PageExtractionAssessment(BaseModel):
     template_image_count: int
     meaningful_image_count: int
     drawing_count: int
+    template_drawing_count: int
+    meaningful_drawing_count: int
     drawing_cluster_count: int
+    meaningful_drawing_cluster_count: int
     largest_image_coverage: float
     largest_meaningful_image_coverage: float
     largest_drawing_cluster_coverage: float
+    largest_meaningful_drawing_cluster_coverage: float
     classification: str
 
 

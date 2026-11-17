@@ -59,17 +59,15 @@ def main() -> None:
         print(
             f"Page {page.page_number}: "
             f"chars={page.character_count}, "
-            f"images={page.image_count}, "
-            f"template_images="
-            f"{page.template_image_count}, "
-            f"meaningful_images="
-            f"{page.meaningful_image_count}, "
-            f"meaningful_image_cov="
+            f"meaningful_images={page.meaningful_image_count}, "
+            f"image_cov="
             f"{page.largest_meaningful_image_coverage:.3f}, "
-            f"drawings={page.drawing_count}, "
-            f"clusters={page.drawing_cluster_count}, "
+            f"meaningful_drawings="
+            f"{page.meaningful_drawing_count}, "
+            f"drawing_clusters="
+            f"{page.meaningful_drawing_cluster_count}, "
             f"drawing_cov="
-            f"{page.largest_drawing_cluster_coverage:.3f}"
+            f"{page.largest_meaningful_drawing_cluster_coverage:.3f}"
         )
             
 if __name__ == "__main__":

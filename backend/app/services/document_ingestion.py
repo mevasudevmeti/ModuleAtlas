@@ -43,6 +43,12 @@ class DocumentIngestionService:
                 )
             )
 
+            template_drawing_signatures = (
+                self._find_template_drawing_signatures(
+                    document
+                )
+            )
+
             for page_index, page in enumerate(
                 document
             ):
@@ -58,13 +64,29 @@ class DocumentIngestionService:
 
                 drawings = page.get_drawings()
 
-                drawing_clusters = (
-                    page.cluster_drawings(
-                        drawings=drawings
-                    )
-                )
+                template_drawings = []
+                meaningful_drawings = []
 
-                page_area = page.rect.get_area()
+                for drawing in drawings:
+
+                    signature = (
+                        self._create_drawing_signature(
+                            drawing,
+                            page.rect,
+                        )
+                    )
+
+                    if (
+                        signature
+                        in template_drawing_signatures
+                    ):
+                        template_drawings.append(
+                            drawing
+                        )
+                    else:
+                        meaningful_drawings.append(
+                            drawing
+                        )
 
                 template_images = [
                     image
@@ -79,6 +101,24 @@ class DocumentIngestionService:
                     if image.get("digest")
                     not in template_image_digests
                 ]
+
+                drawing_clusters = (
+                    page.cluster_drawings(
+                        drawings=drawings
+                    )
+                    if drawings
+                    else []
+                )
+
+                meaningful_drawing_clusters = (
+                    page.cluster_drawings(
+                        drawings=meaningful_drawings
+                    )
+                    if meaningful_drawings
+                    else []
+                )
+
+                page_area = page.rect.get_area()
 
                 largest_image_area = max(
                     (
@@ -109,9 +149,17 @@ class DocumentIngestionService:
                     default=0,
                 )
 
+                largest_meaningful_drawing_cluster_area = max(
+                    (
+                        cluster.get_area()
+                        for cluster
+                        in meaningful_drawing_clusters
+                    ),
+                    default=0,
+                )
+
                 largest_image_coverage = (
-                    largest_image_area
-                    / page_area
+                    largest_image_area / page_area
                     if page_area > 0
                     else 0
                 )
@@ -125,6 +173,13 @@ class DocumentIngestionService:
 
                 largest_drawing_cluster_coverage = (
                     largest_drawing_cluster_area
+                    / page_area
+                    if page_area > 0
+                    else 0
+                )
+
+                largest_meaningful_drawing_cluster_coverage = (
+                    largest_meaningful_drawing_cluster_area
                     / page_area
                     if page_area > 0
                     else 0
@@ -151,8 +206,20 @@ class DocumentIngestionService:
                             drawings
                         ),
 
+                        template_drawing_count=len(
+                            template_drawings
+                        ),
+
+                        meaningful_drawing_count=len(
+                            meaningful_drawings
+                        ),
+
                         drawing_cluster_count=len(
                             drawing_clusters
+                        ),
+
+                        meaningful_drawing_cluster_count=len(
+                            meaningful_drawing_clusters
                         ),
 
                         largest_image_coverage=round(
@@ -167,6 +234,11 @@ class DocumentIngestionService:
 
                         largest_drawing_cluster_coverage=round(
                             largest_drawing_cluster_coverage,
+                            4,
+                        ),
+
+                        largest_meaningful_drawing_cluster_coverage=round(
+                            largest_meaningful_drawing_cluster_coverage,
                             4,
                         ),
                     )
@@ -225,6 +297,138 @@ class DocumentIngestionService:
             digest
             for digest, page_count
             in digest_page_counts.items()
+            if page_count >= minimum_pages
+        }
+
+    @staticmethod
+    def _normalise_drawing_style(
+        value,
+    ):
+        if value is None:
+            return None
+
+        if isinstance(
+            value,
+            (tuple, list),
+        ):
+            return tuple(
+                round(
+                    float(item),
+                    3,
+                )
+                for item in value
+            )
+
+        if isinstance(
+            value,
+            (int, float),
+        ):
+            return round(
+                float(value),
+                3,
+            )
+
+        return str(value)
+
+    @classmethod
+    def _create_drawing_signature(
+        cls,
+        drawing: dict,
+        page_rect: pymupdf.Rect,
+    ) -> tuple:
+
+        rect = pymupdf.Rect(
+            drawing["rect"]
+        )
+
+        normalised_rect = (
+            round(
+                rect.x0 / page_rect.width,
+                3,
+            ),
+            round(
+                rect.y0 / page_rect.height,
+                3,
+            ),
+            round(
+                rect.x1 / page_rect.width,
+                3,
+            ),
+            round(
+                rect.y1 / page_rect.height,
+                3,
+            ),
+        )
+
+        return (
+            normalised_rect,
+            drawing.get("type"),
+
+            cls._normalise_drawing_style(
+                drawing.get("fill")
+            ),
+
+            cls._normalise_drawing_style(
+                drawing.get("color")
+            ),
+
+            round(
+                float(
+                    drawing.get("width")
+                    or 0
+                ),
+                2,
+            ),
+
+            len(
+                drawing.get("items")
+                or []
+            ),
+        )
+
+    @classmethod
+    def _find_template_drawing_signatures(
+        cls,
+        document: pymupdf.Document,
+        repetition_ratio: float = 0.8,
+    ) -> set[tuple]:
+
+        signature_page_counts: Counter = (
+            Counter()
+        )
+
+        for page in document:
+
+            seen_on_page: set[tuple] = set()
+
+            drawings = page.get_drawings()
+
+            for drawing in drawings:
+
+                signature = (
+                    cls._create_drawing_signature(
+                        drawing,
+                        page.rect,
+                    )
+                )
+
+                seen_on_page.add(
+                    signature
+                )
+
+            signature_page_counts.update(
+                seen_on_page
+            )
+
+        minimum_pages = (
+            len(document)
+            * repetition_ratio
+        )
+
+        return {
+            signature
+            for signature, page_count
+            in signature_page_counts.items()
             if page_count >= minimum_pages
         }
 
