@@ -255,3 +255,278 @@ are treated as development results rather than independent validation.
 
 A third document with a different visual/template style will be used
 for validation without modifying the heuristic.
+
+### Third-Document Validation and Vector Template Detection
+
+A third document, `Project_Planning_Lecture.pdf`, was selected to test
+the heuristic against a different module, lecturer style, and presentation
+template.
+
+The document contained 37 pages and included a mixture of:
+
+- conventional text slides
+- tables
+- infographics
+- mind maps
+- diagrams
+- timelines
+- Gantt charts
+
+Initial evaluation of the multi-signal heuristic produced:
+
+- Precision: 0.189
+- Recall: 1.000
+- F1: 0.318
+- Accuracy: 0.189
+
+Although all pages requiring enhanced extraction were detected, all
+30 pages that did not require enhanced extraction were incorrectly
+flagged.
+
+Inspection of the extracted PDF features showed that
+`largest_drawing_cluster_coverage` was equal to `1.000` on almost every
+page.
+
+Further investigation identified a full-page white vector rectangle
+repeated on all 37 pages, together with several header and decorative
+vector elements repeated on 36 of 37 pages.
+
+These repeated elements were part of the presentation template rather
+than meaningful page-specific content.
+
+This demonstrated that vector drawing features can be affected by
+presentation templates in the same way as raster image features.
+
+### Vector Template Filtering
+
+Document-level template detection was extended to vector drawings.
+
+Each vector drawing is represented using a lightweight signature based on:
+
+- normalised bounding box coordinates
+- drawing type
+- fill colour
+- line colour
+- line width
+- number of drawing operations
+
+Drawing signatures appearing on at least 80% of document pages are
+classified as probable template elements.
+
+The ingestion pipeline now preserves both raw and template-filtered
+drawing features:
+
+- total drawing count
+- template drawing count
+- meaningful drawing count
+- total drawing cluster count
+- meaningful drawing cluster count
+- largest raw drawing cluster coverage
+- largest meaningful drawing cluster coverage
+
+After template filtering, ordinary slides in the third document typically
+contained zero meaningful drawings, while pages containing page-specific
+tables, timelines and diagrams retained their visual features.
+
+This reduced the number of false positives caused by repeated
+presentation design elements.
+
+### Small Decorative Image Filtering
+
+Evaluation of the third document showed that image count alone was also
+too sensitive.
+
+Several normal text slides contained multiple small icons or decorative
+images while containing no semantically important visual information.
+
+Examples included pages containing several images where the largest image
+covered less than approximately 1% of the page.
+
+The multi-signal rule was therefore refined so that multiple images are
+only treated as evidence of visual importance when at least one image has
+a minimum page coverage.
+
+The relevant condition became:
+
+`meaningful_image_count >= 2 AND largest_meaningful_image_coverage >= 0.02`
+
+This retained detection of pages containing multiple meaningful visual
+elements while reducing false positives caused by small decorative
+graphics.
+
+### Refined Multi-Signal Heuristic Results
+
+After raster template filtering, vector template filtering, and small-image
+filtering, the refined multi-signal heuristic produced the following
+development results.
+
+`L4_W5_Connectivity.pdf`
+
+- Precision: 0.917
+- Recall: 1.000
+- F1: 0.957
+- Accuracy: 0.944
+
+`W2_IoT systems architecture22.pdf`
+
+- Precision: 0.917
+- Recall: 1.000
+- F1: 0.957
+- Accuracy: 0.962
+
+`Project_Planning_Lecture.pdf`
+
+- Precision: 0.700
+- Recall: 1.000
+- F1: 0.824
+- Accuracy: 0.919
+
+The third document improved from 13 false positives to 3 while retaining
+zero false negatives.
+
+These results show that filtering document-level visual templates and
+small decorative images significantly improves the precision of the
+heuristic.
+
+However, all three documents influenced the design of the heuristic and
+are therefore treated as development data rather than independent
+validation data.
+
+### Unseen Holdout Evaluation
+
+A fourth document, `Student_Service_Portal_Presentation.pdf`, was selected
+as an untouched holdout document.
+
+This presentation differed significantly from the previous documents.
+
+It contained:
+
+- 11 pages
+- no meaningful raster images
+- approximately 1,500 to 3,000 extracted characters per page
+- architecture diagrams
+- workflow diagrams
+- entity relationships
+- structured endpoint and configuration layouts
+- predominantly vector-based visual content
+
+Five pages were manually labelled as requiring enhanced extraction because
+important relationships or spatial structure were not adequately
+represented by native text extraction.
+
+The frozen multi-signal heuristic was then evaluated without modification.
+
+Results:
+
+- TP: 1
+- FP: 1
+- TN: 5
+- FN: 4
+- Precision: 0.500
+- Recall: 0.200
+- F1: 0.286
+- Accuracy: 0.545
+
+Both character-count baselines achieved zero recall because every page
+contained a large amount of native extractable text.
+
+### Holdout Finding
+
+The holdout experiment demonstrated an important limitation of the
+hand-engineered extraction heuristic.
+
+Pages can contain large amounts of correctly extracted text while still
+losing important semantic relationships expressed through:
+
+- arrows
+- spatial positioning
+- architecture connections
+- workflows
+- entity relationships
+- diagram structure
+
+The experiment also showed that visual size alone is not a reliable
+indicator of semantic importance.
+
+Some meaningful architecture and workflow diagrams occupied relatively
+small areas of the page, while some visually large structured layouts
+were already sufficiently represented by extracted text.
+
+Therefore, character count, image count, drawing count, and visual
+coverage cannot reliably determine whether native extraction preserves
+the complete semantic meaning of every academic document.
+
+### Extraction Baseline Decision
+
+Further development of increasingly complex custom PDF visual heuristics
+was stopped at this stage.
+
+The current extraction pipeline will be retained as a reproducible
+baseline rather than extended into a complete custom visual-document
+understanding system.
+
+The baseline now includes:
+
+- native PyMuPDF text extraction
+- SHA-256 document provenance
+- page-level extraction statistics
+- manually labelled extraction-quality ground truth
+- raster image template filtering
+- vector drawing template filtering
+- meaningful image and drawing features
+- character-count baselines
+- multi-signal extraction heuristics
+- development-set evaluation
+- independent holdout evaluation
+- documented failure cases
+
+The holdout failure is intentionally retained as part of the research
+evidence because it demonstrates the limitations of manually engineered
+document-complexity rules.
+
+### Future Enhanced Extraction Approach
+
+Future experiments will compare the lightweight native-extraction baseline
+against an enhanced multimodal document-processing approach using Amazon
+Bedrock once Bedrock access is available.
+
+The purpose of the comparison will not be to reproduce Bedrock document
+understanding functionality manually.
+
+Instead, ModuleAtlas will evaluate whether enhanced multimodal parsing
+improves downstream:
+
+- retrieval quality
+- answer quality
+- grounding
+- citation accuracy
+- latency
+- token usage
+- processing cost
+
+This creates a more useful research comparison between a lightweight,
+low-cost native extraction pipeline and a more capable managed
+multimodal extraction approach.
+
+### Extraction Phase Conclusion
+
+The extraction investigation demonstrated that native PDF extraction is
+sufficient for many text-oriented academic pages but can lose important
+information when meaning depends on visual or spatial relationships.
+
+Simple character-count heuristics generalised poorly.
+
+Adding visual features improved detection on development documents, while
+template filtering significantly reduced false positives caused by
+presentation backgrounds and repeated decorative elements.
+
+However, the independent holdout document showed that manually engineered
+visual-complexity heuristics still fail on dense vector diagrams where
+text extraction succeeds but structural meaning is lost.
+
+The extraction phase is therefore considered complete as a baseline
+experiment.
+
+The next development stage will focus on document chunking, embeddings,
+vector storage, retrieval, and downstream RAG evaluation rather than
+further optimisation of custom PDF parsing rules.
